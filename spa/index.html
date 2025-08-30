@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Meaningfulness Analyzer</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Email Meaningfulness Analyzer</h1>
+        <p>Use AI to determine if an email is meaningful or just noise.</p>
+      </header>
+
+      <div class="welcome-screen" id="welcome-screen">
+        <div class="option-cards">
+          <div class="option-card" id="email-body-card">
+            <i class="fas fa-envelope-open-text"></i>
+            <h3>Email Body</h3>
+            <p>Paste email content directly into the analyzer</p>
+          </div>
+
+          <!-- <div class="option-card" id="upload-email-card">
+            <i class="fas fa-file-upload"></i>
+            <h3>Upload Email</h3>
+            <p>Submit .txt files to be analyzed in bulk</p>
+          </div> -->
+        </div>
+      </div>
+
+      <div class="hidden main-content" id="main-content">
+        <div class="input-section" id="email-body">
+          <div class="section-header">
+            <button class="back-button" id="back-button">
+              <i class="fas fa-arrow-left"></i> Back to options
+            </button>
+            <h2 class="section-title">
+              <i class="fas fa-envelope-open-text"></i> Email Body
+            </h2>
+          </div>
+          <textarea
+            id="email-content"
+            placeholder="Paste the email content here..."
+          ></textarea>
+
+          <div class="actions">
+            <button class="analyze-btn" id="analyze-btn">
+              <i class="fas fa-search"></i> Analyze Email
+            </button>
+            <button class="clear-btn" id="clear-btn">
+              <i class="fas fa-trash-alt"></i> Clear
+            </button>
+          </div>
+        </div>
+
+        <div class="results-section">
+          <h2 class="section-title">
+            <i class="fas fa-chart-bar"></i> Analysis Results
+          </h2>
+
+          <div class="result-content">
+            <div class="loading" id="loading">
+              <div class="spinner"></div>
+              <p>Analyzing email content...</p>
+            </div>
+
+            <div class="placeholder" id="results-placeholder">
+              <i class="fas fa-chart-line"></i>
+              <p>Analysis results will appear here</p>
+            </div>
+
+            <div id="results" style="display: none">
+              <div class="meaningfulness-score">
+                <div class="score-label">Meaningfulness Score</div>
+                <div class="score-value" id="score-value">0%</div>
+                <div class="score-bar">
+                  <div class="score-fill" id="score-fill"></div>
+                </div>
+                <div class="meaningfulness-label" id="meaningfulness-label">
+                  Neutral
+                </div>
+              </div>
+
+              <div class="analysis-details">
+                <div class="detail-item">
+                  <span class="detail-label">Key Topics Found:</span>
+                  <span class="detail-value" id="topics-value">0</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Action Requests:</span>
+                  <span class="detail-value" id="actions-value">0</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Sentiment:</span>
+                  <span class="detail-value" id="sentiment-value">Neutral</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Length Analysis:</span>
+                  <span class="detail-value" id="length-value">Medium</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>&copy; 2025 Arthur Illa. Todos os direitos reservados.</p>
+      </footer>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const welcomeScreen = document.getElementById("welcome-screen");
+        const mainContent = document.getElementById("main-content");
+        const emailBodyCard = document.getElementById("email-body-card");
+        // const uploadEmailCard = document.getElementById("upload-email-card");
+        const backButton = document.getElementById("back-button");
+        // const emailList = document.getElementById("email-list");
+
+        const emailBody = document.getElementById("email-body");
+        const emailContent = document.getElementById("email-content");
+        const analyzeBtn = document.getElementById("analyze-btn");
+        const clearBtn = document.getElementById("clear-btn");
+        const loading = document.getElementById("loading");
+        const resultsPlaceholder = document.getElementById(
+          "results-placeholder"
+        );
+        const results = document.getElementById("results");
+        const scoreValue = document.getElementById("score-value");
+        const scoreFill = document.getElementById("score-fill");
+        const meaningfulnessLabel = document.getElementById(
+          "meaningfulness-label"
+        );
+        const topicsValue = document.getElementById("topics-value");
+        const actionsValue = document.getElementById("actions-value");
+        const sentimentValue = document.getElementById("sentiment-value");
+        const lengthValue = document.getElementById("length-value");
+
+        emailBodyCard.addEventListener("click", function () {
+          welcomeScreen.classList.add("hidden");
+          mainContent.classList.remove("hidden");
+          mainContent.classList.add("fade-in");
+          // emailList.classList.add("hidden");
+          emailBody.classList.remove("hidden");
+        });
+
+        // uploadEmailCard.addEventListener("click", function () {
+        //   welcomeScreen.classList.add("hidden");
+        //   emailList.classList.remove("hidden");
+        //   mainContent.classList.remove("hidden");
+        //   mainContent.classList.add("fade-in");
+        //   emailBody.classList.add("hidden");
+        // });
+
+        backButton.addEventListener("click", function () {
+          mainContent.classList.add("hidden");
+          welcomeScreen.classList.remove("hidden");
+          welcomeScreen.classList.add("fade-in");
+        });
+
+        analyzeBtn.addEventListener("click", function () {
+          const content = emailContent.value.trim();
+
+          if (content.length === 0) {
+            alert("Please enter some email content to analyze");
+            return;
+          }
+
+          loading.style.display = "block";
+          resultsPlaceholder.style.display = "none";
+          results.style.display = "none";
+
+          setTimeout(() => {
+            analyzeEmail(content);
+          }, 2000);
+        });
+
+        clearBtn.addEventListener("click", function () {
+          emailContent.value = "";
+          results.style.display = "none";
+          resultsPlaceholder.style.display = "block";
+        });
+
+        function analyzeEmail(content) {
+          loading.style.display = "none";
+          results.style.display = "block";
+
+          const score = Math.floor(Math.random() * 100);
+          const topics = Math.floor(Math.random() * 5) + 1;
+          const actions = Math.floor(Math.random() * 3);
+          const sentiments = ["Positive", "Neutral", "Negative"];
+          const sentiment =
+            sentiments[Math.floor(Math.random() * sentiments.length)];
+          const lengths = ["Short", "Medium", "Long"];
+          const length = lengths[Math.floor(Math.random() * lengths.length)];
+
+          scoreValue.textContent = `${score}%`;
+          scoreFill.style.width = `${score}%`;
+
+          if (score >= 70) {
+            meaningfulnessLabel.textContent = "Meaningful Email";
+            meaningfulnessLabel.className = "meaningfulness-label meaningful";
+          } else if (score >= 40) {
+            meaningfulnessLabel.textContent = "Moderately Meaningful";
+            meaningfulnessLabel.className = "meaningfulness-label";
+          } else {
+            meaningfulnessLabel.textContent = "Not Meaningful";
+            meaningfulnessLabel.className =
+              "meaningfulness-label not-meaningful";
+          }
+
+          topicsValue.textContent = topics;
+          actionsValue.textContent = actions;
+          sentimentValue.textContent = sentiment;
+          lengthValue.textContent = length;
+        }
+      });
+    </script>
+  </body>
+</html>
