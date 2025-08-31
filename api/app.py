@@ -10,11 +10,12 @@ CORS(app)  # pyright: ignore[reportUnusedCallResult]
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
 OPENROUTER_API_URL = os.environ.get('OPENROUTER_API_URL', 'https://openrouter.ai/api/v1')
 AI_MODEL = os.environ.get("AI_MODEL", "deepseek/deepseek-r1-0528:free")
-PORT = os.environ.get("PORT", 9003)
+PORT = os.environ.get("PORT")
 
 def analyze_email_content(text: str):
     prompt = f"""
     Analyze the following email content and provide a JSON response with these exact fields:
+    Please note that "meaningfulness", in this context, refers to what is considered meaningful in a corporate sense. Urgent actions, important meetings and emails from managers are normally meaningful, while system notifications, spam and messages such as "Happy new year!" are generally not. 
     - "score": integer between 0-100 representing how meaningful the email is
     - "meaningful_label": string classification ("Highly Meaningful", "Meaningful", "Moderately Meaningful", "Not Meaningful")
     - "topics": integer count of distinct topics discussed
