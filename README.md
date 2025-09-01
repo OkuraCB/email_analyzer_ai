@@ -7,7 +7,7 @@ This monorepo contains the SPA and API components of the analyzer and, as such, 
 ## <span style="color: #f72585">Access and hosting
 
 This project (as usual with my other work) is entirely self-hosted. I built the infrastructure on a personal work server built by myself.
-It's running on a headless Arch Linux setup with `Linux 6.14.10`, the process managed by `systemd` and the HTTP access point running inside a `nginx` container.
+It's running on a headless Arch Linux setup with `Linux 6.14.10`, the process managed by `systemd` and the HTTP access point running inside a `nginx` container. The CI/CD Pipeline is also configured inside the server, making it unnecessary to use third party alternatives such as Github Agents.
 
 The connection is also security-certified. Runs in the `https` protocol and the certificates are issued by [Let's Encrypt](https://letsencrypt.org/).
 
