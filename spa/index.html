@@ -24,12 +24,6 @@
             <h3>Email Body</h3>
             <p>Paste email content directly into the analyzer</p>
           </div>
-
-          <!-- <div class="option-card" id="upload-email-card">
-            <i class="fas fa-file-upload"></i>
-            <h3>Upload Email</h3>
-            <p>Submit .txt files to be analyzed in bulk</p>
-          </div> -->
         </div>
       </div>
 
@@ -113,6 +107,23 @@
         </div>
       </div>
 
+      <div class="suggestion-section hidden" id="suggestion-section">
+          <h2 class="section-title" id="suggestion-title">
+            <i class="fas fa-lightbulb"></i> Suggested Reply
+          </h2>
+          <div class="suggestion-content">
+            <div class="suggestion-text" id="suggestion-text">
+              <p>AI-generated reply suggestions will appear here after analysis.</p>
+            </div>
+            <div class="suggestion-actions">
+              <button class="copy-btn" id="copy-btn">
+                <i class="fas fa-copy"></i> Copy to Clipboard
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <footer>
         <p>&copy; 2025 Arthur Illa. Todos os direitos reservados.</p>
       </footer>
@@ -123,9 +134,7 @@
         const welcomeScreen = document.getElementById("welcome-screen");
         const mainContent = document.getElementById("main-content");
         const emailBodyCard = document.getElementById("email-body-card");
-        // const uploadEmailCard = document.getElementById("upload-email-card");
         const backButton = document.getElementById("back-button");
-        // const emailList = document.getElementById("email-list");
 
         const emailBody = document.getElementById("email-body");
         const emailContent = document.getElementById("email-content");
@@ -147,21 +156,17 @@
         const lengthValue = document.getElementById("length-value");
         const confidenceValue = document.getElementById("confidence-value");
 
+        const suggestionSection = document.getElementById("suggestion-section");
+        const suggestionTitle = document.getElementById("suggestion-title")
+        const suggestionText = document.getElementById("suggestion-text");
+        const copyBtn = document.getElementById("copy-btn");
+
         emailBodyCard.addEventListener("click", function () {
           welcomeScreen.classList.add("hidden");
           mainContent.classList.remove("hidden");
           mainContent.classList.add("fade-in");
-          // emailList.classList.add("hidden");
           emailBody.classList.remove("hidden");
         });
-
-        // uploadEmailCard.addEventListener("click", function () {
-        //   welcomeScreen.classList.add("hidden");
-        //   emailList.classList.remove("hidden");
-        //   mainContent.classList.remove("hidden");
-        //   mainContent.classList.add("fade-in");
-        //   emailBody.classList.add("hidden");
-        // });
 
         backButton.addEventListener("click", function () {
           mainContent.classList.add("hidden");
@@ -170,7 +175,7 @@
         });
 
         analyzeBtn.addEventListener("click", function () {
-          const content = emailContent.value.trim();
+          const content = emailContent.value;
 
           if (content.length === 0) {
             alert("Please enter some email content to analyze");
@@ -180,11 +185,12 @@
           loading.style.display = "block";
           resultsPlaceholder.style.display = "none";
           results.style.display = "none";
+          suggestionSection.classList.add("hidden");
 
-          fetch("http://127.0.0.1:9003/api/analyze", {
+          fetch("https://arthurtv.duckdns.org/api/api/analyze", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: content }),
+            body: JSON.stringify({ text: content })
           })
             .then((response) => {
               if (!response.ok)
@@ -199,10 +205,11 @@
             .catch((error) => {
               console.error("Error: ", error);
               alert(
-                "Something unexpected happened. Please try again in a few minutes."
+                "Oops! The API Key is overwhelmed! Please try again in a few minutes."
               );
               loading.style.display = "none";
               results.style.display = "block";
+              suggestionSection.classList.add("hidden");
             });
         });
 
@@ -210,20 +217,31 @@
           emailContent.value = "";
           results.style.display = "none";
           resultsPlaceholder.style.display = "block";
+          suggestionSection.classList.add("hidden");
+        });
+
+        copyBtn.addEventListener("click", function () {
+          const textToCopy = suggestionText.innerText;
+          navigator.clipboard.writeText(textToCopy).then(() => {
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            setTimeout(() => {
+              copyBtn.innerHTML = originalText;
+            }, 2000);
+          }).catch(err => {
+            console.error('Failed to copy: ', err);
+          });
         });
 
         function updateResults(data) {
-          // Hide loading, show results
           loading.style.display = "none";
           results.style.display = "block";
 
-          // Update UI with API response data
           scoreValue.textContent = `${data.score}%`;
           scoreFill.style.width = `${data.score}%`;
 
           meaningfulnessLabel.textContent = data.meaningful_label;
 
-          // Apply appropriate class based on score
           if (data.score >= 70) {
             meaningfulnessLabel.className = "meaningfulness-label meaningful";
           } else if (data.score >= 40) {
@@ -238,6 +256,16 @@
           sentimentValue.textContent = data.sentiment;
           lengthValue.textContent = data.length;
           confidenceValue.textContent = `${data.accuracy}%`;
+
+          if (score >= 90) {
+            suggestionTitle.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> This is not a suggestion!`
+            suggestionText.innerHTML = `<p>This email requires attention imediately. Please do not use AI Generated text for this one.</p>`;
+            suggestionSection.classList.remove("hidden");
+          }else if (data.suggestion){
+            suggestionTitle.innerHTML = `<i class="fas fa-lightbulb"></i> Suggested Reply`
+            suggestionText.innerHTML = `<p>${data.suggestion}</p>`;
+            suggestionSection.classList.remove("hidden");
+          }
         }
       });
     </script>

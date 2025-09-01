@@ -10,7 +10,6 @@ CORS(app)  # pyright: ignore[reportUnusedCallResult]
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
 OPENROUTER_API_URL = os.environ.get('OPENROUTER_API_URL', 'https://openrouter.ai/api/v1')
 AI_MODEL = os.environ.get("AI_MODEL", "deepseek/deepseek-r1-0528:free")
-PORT = os.environ.get("PORT")
 
 def analyze_email_content(text: str):
     prompt = f"""
@@ -23,6 +22,7 @@ def analyze_email_content(text: str):
     - "sentiment": string sentiment classification ("Positive", "Neutral", "Negative")
     - "length": string classification of email length ("Very Short", "Short", "Medium", "Long", "Very Long")
     - "accuracy": integer that represents the percentage of confidence you have in this response
+    - "suggestion": string with a short message that contains an appropriate response.
     
     Email content: {text}
     
@@ -41,14 +41,14 @@ def analyze_email_content(text: str):
         
         analysis = json.loads(ai_response)
         
-        required_fields = ["score", "meaningful_label", "topics", "actions", "sentiment", "length", "accuracy"]
+        required_fields = ["score", "meaningful_label", "topics", "actions", "sentiment", "length", "accuracy", "suggestion"]
         if all(field in analysis for field in required_fields):
             return analysis
         else:
             raise ValueError("DeepSeek response missing required fields")
             
     except Exception as e:
-        print(f"DeepSeek API error: {e}")
+        print(e)
         raise ValueError("Something gone wrong")
 
 @app.route('/api/analyze', methods=['POST'])
@@ -72,4 +72,8 @@ def analyze_email():
         return jsonify(analysis)
         
     except Exception as e:
+        print(e)
         return jsonify({"error": str(e)}), 500
+
+if __name__ == "__main__":
+    app.run(debug=True)

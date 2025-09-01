@@ -211,11 +211,7 @@ button {
 }
 
 .analyze-btn {
-  background: linear-gradient(
-    90deg,
-    var(--primary) 0%,
-    var(--primary-light) 100%
-  );
+  background: var(--primary);
   color: white;
 }
 
@@ -225,26 +221,12 @@ button {
 }
 
 .clear-btn {
-  background-color: #f8f9fa;
+  background-color: var(--light);
   color: var(--gray);
 }
 
 .clear-btn:hover {
   background-color: #e9ecef;
-}
-
-.file-upload {
-  display: none;
-}
-
-.upload-btn {
-  background: linear-gradient(90deg, #48cae4 0%, #0096c7 100%);
-  color: white;
-}
-
-.upload-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(72, 202, 228, 0.3);
 }
 
 .result-content {
@@ -382,58 +364,6 @@ button {
   color: #adb5bd;
 }
 
-.email-list {
-  display: none;
-  margin-top: 30px;
-}
-
-.email-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  border: 1px solid #e9ecef;
-  border-radius: var(--border-radius);
-  margin-bottom: 15px;
-  transition: var(--transition);
-}
-
-.email-item:hover {
-  border-color: var(--primary);
-  background-color: #f8f9fa;
-}
-
-.email-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.email-icon {
-  font-size: 1.5rem;
-  color: var(--primary);
-}
-
-.email-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.email-subject {
-  font-weight: 600;
-  margin-bottom: 5px;
-}
-
-.email-sender {
-  color: var(--gray);
-  font-size: 0.9rem;
-}
-
-.email-actions button {
-  padding: 8px 16px;
-  font-size: 0.9rem;
-}
-
 footer {
   text-align: center;
   padding: 25px 0;
@@ -446,7 +376,6 @@ footer {
   margin-top: 40px;
 }
 
-/* Utility classes for showing/hiding elements */
 .hidden {
   display: none;
 }
@@ -466,4 +395,58 @@ footer {
   to {
     opacity: 1;
   }
+}
+
+.suggestion-section {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 30px;
+  box-shadow: var(--box-shadow);
+  margin-top: 30px;
+}
+
+.suggestion-content {
+  margin-top: 20px;
+}
+
+.suggestion-text {
+  background-color: #f8f9fa;
+  border-left: 4px solid var(--primary);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.suggestion-text p {
+  margin: 0;
+  color: var(--dark);
+}
+
+.suggestion-actions {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.copy-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.copy-btn {
+  background-color: var(--primary);
+  color: white;
+}
+
+.copy-btn:hover {
+  background-color: var(--secondary);
 }
