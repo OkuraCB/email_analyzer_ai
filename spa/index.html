@@ -187,7 +187,7 @@
           results.style.display = "none";
           suggestionSection.classList.add("hidden");
 
-          fetch("https://arthurtv.duckdns.org/api/api/analyze", {
+          fetch("http://127.0.0.1:5000/api/analyze", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ text: content })
@@ -257,7 +257,7 @@
           lengthValue.textContent = data.length;
           confidenceValue.textContent = `${data.accuracy}%`;
 
-          if (score >= 90) {
+          if (data.score >= 90) {
             suggestionTitle.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> This is not a suggestion!`
             suggestionText.innerHTML = `<p>This email requires attention imediately. Please do not use AI Generated text for this one.</p>`;
             suggestionSection.classList.remove("hidden");
