@@ -261,10 +261,12 @@
             suggestionTitle.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> This is not a suggestion!`
             suggestionText.innerHTML = `<p>This email requires attention imediately. Please do not use AI Generated text for this one.</p>`;
             suggestionSection.classList.remove("hidden");
+            copyBtn.classList.add("hidden")
           }else if (data.suggestion){
             suggestionTitle.innerHTML = `<i class="fas fa-lightbulb"></i> Suggested Reply`
             suggestionText.innerHTML = `<p>${data.suggestion}</p>`;
             suggestionSection.classList.remove("hidden");
+            copyBtn.classList.remove("hidden")
           }
         }
       });
